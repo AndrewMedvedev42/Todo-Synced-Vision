@@ -1,35 +1,43 @@
-import {
-  Form,
-  Input,
-  Button,
-} from 'antd';
+import { useDispatch } from 'react-redux';
+import { Form, Input, Button } from 'antd';
+import createNote from '../redux/actions/createNote';
 
-import { onFinish } from '../hooks';
+import { ISubmitValue } from 'interfaces';
 
-const { TextArea } = Input;
-
-export const FormDisabledDemo = () => {
+export const SubmitNoteForm = () => {
     const [form] = Form.useForm();
+    const dispatch = useDispatch()
+
+    const submitNote = (value:ISubmitValue)=> {        
+        if(value.note_name.match(/[^0-9,.\s+']/g)){
+            dispatch(createNote(value))
+        }else{
+            alert('No integer values, but you can have a mix of alpha and numeric')
+        }
+    }
+
     return (
         <Form 
+            className='input-group d-flex justify-content-center'
             form={form}
-            onFinish={onFinish}>
-        <Form.Item
-            name="firstName"
-            rules={[
-                {
-                    required: true,
-                    message: 'Please provide a name!',
-                    whitespace: true,
-                },
-                { min: 3, message: 'No more than 3 characters!' },
-            ]}
+            onFinish={(data)=>submitNote(data)}
         >
-            <Input />
-        </Form.Item>
-        <Form.Item>
-            <Button type="primary" htmlType="submit">Button</Button>
-        </Form.Item>
+            <Form.Item
+                name='note_name'
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please provide a name for note!',
+                        whitespace: true,
+                    },
+                    { min: 3, message: 'No less than 3 characters!' },
+                ]}
+            >
+                <Input className='form-control' placeholder="Note's name"/>
+            </Form.Item>
+            <Form.Item>
+                <Button type="primary" className='btn btn-primary' htmlType="submit">Submit Note</Button>
+            </Form.Item>
         </Form>
     );
 };

@@ -1,3 +1,3 @@
 export type Props = {
-    [key: string]: any;
+    is_completed:boolean
 };

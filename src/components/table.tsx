@@ -1,42 +1,56 @@
+import React  from 'react';
 import { useSelector, useDispatch} from 'react-redux';
+import { RootState } from '../interfaces';
 import { AiFillDelete } from 'react-icons/ai';
 import { FaCheck } from 'react-icons/fa';
-import { BsThreeDots } from 'react-icons/bs';
-import { RootState } from '../interfaces';
-
+import { MdPending } from 'react-icons/md';
 import deleteNote from '../redux/actions/deleteNote';
+import setStatus from '../redux/actions/setStatus';
 
-export const NoteTable:React.FC = () => {
+import { INote } from 'interfaces';
+
+import { Props } from 'types';
+
+export const Table:React.FC<Props> = ({is_completed}) => {
     const ICON_SIZE = 25
     const dispatch = useDispatch()
-    const {notes} = useSelector((state:RootState) => state);   
+    const {notes} = useSelector((state:RootState) => state); 
     return (
-        <table className='table table-bordered'>
-            <thead>
-                <tr>
-                    <th scope='col'>Name</th>
-                    <th scope='col'>Created at</th>
-                    <th scope='col'>Content</th>
-                    <th scope='col'></th>
-                    <th scope='col'></th>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    notes.map((item:any)=>{
-                        const {id, name, createdAt, text_content, completed} = item
+        <table className='table'>
+        <thead className='bg-primary text-white'>
+            <tr>
+                <th>Note name</th>
+                <th>Created At</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {
+                notes.filter((item:INote)=>item.completed === is_completed).length ? (
+                    notes
+                        .filter((item:INote)=>item.completed === is_completed)
+                        .map((item:INote)=>{
+                        const {id, name, createdAt, completed} = item
                                 return (
-                                    <tr key={id}>
-                                        <td>{name}</td>
+                                    <tr key={id} className={`${completed && 'table-success'}`}>
+                                        <th>{name}</th>
                                         <th>{createdAt}</th>
-                                        <th>{text_content}</th>
-                                        <th>
-                                            <button type='button' className={`btn ${!completed ? 'btn-secondary' : 'btn-success'}`}>
-                                                {!completed ? <BsThreeDots size={ICON_SIZE}/> : <FaCheck size={ICON_SIZE}/>}
+                                        <th className='col-1'>
+                                            <button 
+                                                type='button' 
+                                                className={`w-100 btn ${!completed ? 'btn-secondary' : 'btn-success'}`}
+                                                onClick={()=>{dispatch(setStatus(id, completed))}}
+                                            >
+                                                {!completed ? <MdPending size={ICON_SIZE}/> : <FaCheck size={ICON_SIZE}/>}
                                             </button>
                                         </th>
-                                        <th>
-                                            <button type='button' className='btn btn-danger' onClick={()=>{dispatch(deleteNote(id))}} >
+                                        <th className='col-1'>
+                                            <button 
+                                                type='button' 
+                                                className='w-100 btn btn-danger' 
+                                                onClick={()=>{dispatch(deleteNote(id))}}
+                                            >
                                                 {<AiFillDelete size={ICON_SIZE}/>}
                                             </button>
                                         </th>
@@ -44,8 +58,14 @@ export const NoteTable:React.FC = () => {
                                 )
                             
                     })
-                }
-            </tbody>
-        </table>
+                ):(
+                    <tr className='border'>
+                        <th>---</th>
+                        <th>---</th>
+                    </tr>
+                )
+            }
+        </tbody>
+    </table>
     )
 }

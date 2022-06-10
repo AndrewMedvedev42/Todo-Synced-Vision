@@ -1,19 +1,18 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Dispatch } from 'redux'
-import { getMentionedDates, generateId, setCreationDate } from '../../modules';
+import { setCreationDate } from '../../modules';
 
-const createNote = (event:any) => async (dispatch:Dispatch) => {
-    const {name, category, text_content} = event.target
+import { ISubmitValue } from 'interfaces';
+
+const createNote = (data:ISubmitValue) => async (dispatch:Dispatch) => {
     dispatch({
             type:'CREATE_NEW_NOTE',
             payload:{
                 note_data: {
-                    id:generateId(),
-                    name:name.value,
-                    archived:false,
+                    id:uuidv4(),
+                    name:data.note_name,
                     createdAt:setCreationDate(),
-                    category:category.value,
-                    text_content:text_content.value,
-                    datesMentioned:getMentionedDates(text_content.value)
+                    completed:false,
                 },
         }
     })    
