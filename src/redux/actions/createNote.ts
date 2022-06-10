@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Dispatch } from 'redux'
-import { setCreationDate } from '../../modules';
+import { setCreationDate } from 'modules';
 
 import { ISubmitValue } from 'interfaces';
 

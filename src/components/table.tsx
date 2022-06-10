@@ -1,11 +1,11 @@
 import React  from 'react';
 import { useSelector, useDispatch} from 'react-redux';
-import { RootState } from '../interfaces';
+import { RootState } from 'interfaces';
 import { AiFillDelete } from 'react-icons/ai';
 import { FaCheck } from 'react-icons/fa';
 import { MdPending } from 'react-icons/md';
-import deleteNote from '../redux/actions/deleteNote';
-import setStatus from '../redux/actions/setStatus';
+import deleteNote from 'redux/actions/deleteNote';
+import setStatus from 'redux/actions/setStatus';
 
 import { INote } from 'interfaces';
 
@@ -27,9 +27,10 @@ export const Table:React.FC<Props> = ({is_completed}) => {
         </thead>
         <tbody>
             {
+                //Checks if there notes that matches with the table category 
                 notes.filter((item:INote)=>item.completed === is_completed).length ? (
                     notes
-                        .filter((item:INote)=>item.completed === is_completed)
+                        .filter((item:INote)=>item.completed === is_completed)//Filters notes by completion status
                         .map((item:INote)=>{
                         const {id, name, createdAt, completed} = item
                                 return (
@@ -39,10 +40,10 @@ export const Table:React.FC<Props> = ({is_completed}) => {
                                         <th className='col-1'>
                                             <button 
                                                 type='button' 
-                                                className={`w-100 btn ${!completed ? 'btn-secondary' : 'btn-success'}`}
+                                                className={`w-100 btn ${!completed ? 'btn-secondary' : 'btn-success'}`}//Adds corresponding class based on completion status
                                                 onClick={()=>{dispatch(setStatus(id, completed))}}
                                             >
-                                                {!completed ? <MdPending size={ICON_SIZE}/> : <FaCheck size={ICON_SIZE}/>}
+                                                {!completed ? <MdPending size={ICON_SIZE}/> : <FaCheck size={ICON_SIZE}/>/*Shows corresponding icon based on completion status*/}
                                             </button>
                                         </th>
                                         <th className='col-1'>
